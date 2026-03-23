@@ -683,7 +683,7 @@ export function App() {
                 Examples
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/luiztux/stitch-to-tailwind"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary"
@@ -1322,7 +1322,7 @@ export function App() {
 
             <div className="flex flex-wrap justify-center gap-8">
               <a
-                href="https://github.com"
+                href="https://github.com/luiztux/stitch-to-tailwind"
                 className="flex items-center gap-1.5 text-sm"
               >
                 <svg
