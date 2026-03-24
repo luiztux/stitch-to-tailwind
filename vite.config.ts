@@ -5,7 +5,6 @@ import { defineConfig } from "vite"
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/stitch-to-tailwind",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
