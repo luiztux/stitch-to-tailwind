@@ -5,7 +5,7 @@ import { defineConfig } from "vite"
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/stitch-to-tailwind/", // Nome exato do seu repositório no GitHub
+  base: "/stitch-to-tailwind/",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
