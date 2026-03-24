@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useRef } from "react"
 import {
   ExternalLink,
   Zap,
@@ -355,9 +355,10 @@ const generateShades = (hex: string): string[] => {
 // Color Distribution Chart Component
 function ColorDistributionChart({ colors }: { colors: ColorToken[] }) {
   const chartData = useMemo(() => {
+    const percentage = Number((100 / colors.length).toFixed(1))
     return colors.map((c) => ({
       name: c.name,
-      value: 1,
+      value: percentage,
       fill: c.hex,
     }))
   }, [colors])
@@ -379,7 +380,7 @@ function ColorDistributionChart({ colors }: { colors: ColorToken[] }) {
         <PieChart>
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent hideLabel />}
+            content={<ChartTooltipContent hideLabel formatter={(value) => `${value}%`} />}
           />
           <Pie
             data={chartData}
@@ -389,19 +390,6 @@ function ColorDistributionChart({ colors }: { colors: ColorToken[] }) {
             outerRadius={70}
             strokeWidth={0}
             paddingAngle={2}
-            shape={(props: unknown) => {
-              const { cx, cy, outerRadius, fill } = props as {
-                cx: number
-                cy: number
-                outerRadius: number
-                fill: string
-              }
-              return (
-                <g>
-                  <circle cx={cx} cy={cy} r={outerRadius} fill={fill} />
-                </g>
-              )
-            }}
           />
         </PieChart>
       </ChartContainer>
@@ -535,6 +523,26 @@ export function App() {
     null
   )
   const [activeTab, setActiveTab] = useState("config")
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const content = event.target?.result as string
+      setInput(content)
+      toast.success(`Arquivo ${file.name} carregado com sucesso!`)
+    }
+    reader.onerror = () => {
+      toast.error("Erro ao ler o arquivo.")
+    }
+    reader.readAsText(file)
+    
+    // Reseta o input para permitir enviar o mesmo arquivo novamente
+    e.target.value = ""
+  }
 
   // Auto-detect input format when input changes
   useEffect(() => {
@@ -767,12 +775,20 @@ export function App() {
                         variant="ghost"
                         size="icon"
                         className="size-8 text-muted-foreground"
+                        onClick={() => fileInputRef.current?.click()}
                       >
                         <Upload className="size-4" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Upload .md file</TooltipContent>
+                    <TooltipContent>Upload .md ou .html</TooltipContent>
                   </Tooltip>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept=".md,.html"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                  />
                 </div>
               </div>
               {/* Format indicator */}
